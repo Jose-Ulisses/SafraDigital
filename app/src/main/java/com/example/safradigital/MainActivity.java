@@ -3,7 +3,6 @@ package com.example.safradigital;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-
 import com.example.safradigital.views.colheitas.ColheitaFragment;
 import com.example.safradigital.views.funcionarios.FuncionariosFragment;
 import com.example.safradigital.views.lavouras.LavourasFragment;
@@ -17,8 +16,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        
-        // Set default fragment
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new ColheitaFragment())
@@ -29,11 +27,11 @@ public class MainActivity extends AppCompatActivity {
             Fragment selectedFragment = null;
             int itemId = item.getItemId();
             
-            if (itemId == R.id.navigation_home) {
+            if (itemId == R.id.navigation_colheita) {
                 selectedFragment = new ColheitaFragment();
-            } else if (itemId == R.id.navigation_search) {
+            } else if (itemId == R.id.navigation_lavoura) {
                 selectedFragment = new LavourasFragment();
-            } else if (itemId == R.id.navigation_profile) {
+            } else if (itemId == R.id.navigation_funcionarios) {
                 selectedFragment = new FuncionariosFragment();
             }
 

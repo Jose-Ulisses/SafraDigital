@@ -15,10 +15,10 @@ public class DbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db){
         db.execSQL("CREATE TABLE " + DbSchema.ColheitasTbl.NOME_TBL + "(" +
-                DbSchema.ColheitasTbl.Cols.ID_COLHEITA + " INT PRIMARY KEY AUTOINCREMENT, " +
-                DbSchema.ColheitasTbl.Cols.ID_LAVOURA + " INT, " +
-                DbSchema.ColheitasTbl.Cols.ID_TALHAO + " INT, " +
-                DbSchema.ColheitasTbl.Cols.ID_FUNCIONARIO + " INT, " +
+                DbSchema.ColheitasTbl.Cols.ID_COLHEITA + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                DbSchema.ColheitasTbl.Cols.ID_LAVOURA + " INTEGER, " +
+                DbSchema.ColheitasTbl.Cols.ID_TALHAO + " INTEGER, " +
+                DbSchema.ColheitasTbl.Cols.ID_FUNCIONARIO + " INTEGER, " +
                 DbSchema.ColheitasTbl.Cols.QNTD + " REAL, " +
                 DbSchema.ColheitasTbl.Cols.DATA + " DATE, " +
                 "FOREIGN KEY(" + DbSchema.ColheitasTbl.Cols.ID_LAVOURA + ") " +
@@ -31,15 +31,15 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
         db.execSQL("CREATE TABLE " + DbSchema.LavourasTbl.NOME_TBL + "(" +
-                DbSchema.LavourasTbl.Cols.ID_LAVOURA + " INT PRIMARY KEY AUTOINCREMENT, " +
+                DbSchema.LavourasTbl.Cols.ID_LAVOURA + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 DbSchema.LavourasTbl.Cols.NOME_LAVOURA + " TEXT, " +
                 DbSchema.LavourasTbl.Cols.TOTAL_LAVOURA + " REAL" + ")"
         );
 
 
         db.execSQL("CREATE TABLE " + DbSchema.TalhaoTbl.NOME_TBL + "(" +
-                DbSchema.TalhaoTbl.Cols.ID_TALHAO + " INT PRIMARY KEY AUTOINCREMENT, " +
-                DbSchema.TalhaoTbl.Cols.ID_LAVOURA_TALHAO + " INT, " +
+                DbSchema.TalhaoTbl.Cols.ID_TALHAO + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                DbSchema.TalhaoTbl.Cols.ID_LAVOURA_TALHAO + " INTEGER, " +
                 DbSchema.TalhaoTbl.Cols.NOME_TALHAO + " TEXT, " +
                 DbSchema.TalhaoTbl.Cols.TOTAL_TALHAO + " REAL, " +
                 "FOREIGN KEY(" + DbSchema.TalhaoTbl.Cols.ID_LAVOURA_TALHAO + ") " +
@@ -48,7 +48,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
         db.execSQL("CREATE TABLE " + DbSchema.FuncionariosTbl.NOME_TBL + "(" +
-                DbSchema.FuncionariosTbl.Cols.ID_FUNCIONARIO + " INT PRIMARY KEY AUTOINCREMENT, " +
+                DbSchema.FuncionariosTbl.Cols.ID_FUNCIONARIO + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 DbSchema.FuncionariosTbl.Cols.NOME_FUNCIONARIO + " TEXT, " +
                 DbSchema.FuncionariosTbl.Cols.CPF_FUNCIONARIO + " TEXT, " +
                 DbSchema.FuncionariosTbl.Cols.TELEFONE_FUNCIONARIO + " TEXT, " +

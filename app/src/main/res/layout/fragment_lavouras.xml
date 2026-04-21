@@ -26,4 +26,11 @@
         android:layout_height="80dp"
         android:text="visualizar lavouras"
         android:textSize="20sp"/>
+
+    <Button
+        android:id="@+id/button_add_talhao"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:text="adicionar talhão"
+        android:textSize="20sp"/>
 </LinearLayout>
