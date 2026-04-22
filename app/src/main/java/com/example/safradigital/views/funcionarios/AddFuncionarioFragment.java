@@ -39,15 +39,24 @@ public class AddFuncionarioFragment extends Fragment {
             String telefone = inputTelefone.getText().toString().trim();
             String chavePix = inputPix.getText().toString().trim();
 
-            if (!nomeFuncionario.isEmpty() && !cpf.isEmpty() && !telefone.isEmpty() && !chavePix.isEmpty()) {
-                db.addFuncionario(nomeFuncionario, cpf, telefone, chavePix);
-                Toast.makeText(getContext(), "Funcionário salvo com sucesso!", Toast.LENGTH_SHORT).show();
-                getParentFragmentManager().popBackStack();
-            } else {
+            if (nomeFuncionario.isEmpty()) {
                 inputNome.setError("Por favor, insira o nome do Funcionário");
-                inputCpf.setError("Por favor, insira o cpf do Funcionário");
-                inputTelefone.setError("Por favor, insira o telefone do Funcionário");
-                inputPix.setError("Por favor, insira a chave PIX do Funcionário");
+            } else{
+                if(cpf.isEmpty()){
+                    inputCpf.setError("Por favor, insira o cpf do Funcionário");
+                } else{
+                    if(telefone.isEmpty()){
+                        inputTelefone.setError("Por favor, insira o telefone do Funcionário");
+                    } else {
+                        if(chavePix.isEmpty()){
+                            inputPix.setError("Por favor, insira a chave PIX do Funcionário");
+                        } else {
+                            db.addFuncionario(nomeFuncionario, cpf, telefone, chavePix);
+                            Toast.makeText(getContext(), "Funcionário salvo com sucesso!", Toast.LENGTH_SHORT).show();
+                            getParentFragmentManager().popBackStack();
+                        }
+                    }
+                }
             }
         });
 

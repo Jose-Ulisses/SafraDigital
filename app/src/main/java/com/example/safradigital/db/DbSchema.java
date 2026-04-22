@@ -28,6 +28,7 @@ public class DbSchema {
             public static final String ID_TALHAO = "_id";
             public static final String ID_LAVOURA_TALHAO = "id_lavoura";
             public static final String NOME_TALHAO = "nome_talhao";
+            public static final String PRECO_TALHAO = "preco_talhao";
             public static final String TOTAL_TALHAO = "total_talhao";
         }
     }

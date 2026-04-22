@@ -41,6 +41,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 DbSchema.TalhaoTbl.Cols.ID_TALHAO + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 DbSchema.TalhaoTbl.Cols.ID_LAVOURA_TALHAO + " INTEGER, " +
                 DbSchema.TalhaoTbl.Cols.NOME_TALHAO + " TEXT, " +
+                DbSchema.TalhaoTbl.Cols.PRECO_TALHAO + " INTEGER, " +
                 DbSchema.TalhaoTbl.Cols.TOTAL_TALHAO + " REAL, " +
                 "FOREIGN KEY(" + DbSchema.TalhaoTbl.Cols.ID_LAVOURA_TALHAO + ") " +
                 "REFERENCES " + DbSchema.LavourasTbl.NOME_TBL + "(" + DbSchema.LavourasTbl.Cols.ID_LAVOURA + ")" + ")"

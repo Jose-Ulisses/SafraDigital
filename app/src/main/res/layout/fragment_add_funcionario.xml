@@ -28,7 +28,8 @@
         android:layout_height="wrap_content"
         android:hint="CPF"
         android:textSize="24sp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:inputType="number"/>
 
     <EditText
         android:id="@+id/input_telefone"
@@ -36,7 +37,8 @@
         android:layout_height="wrap_content"
         android:hint="Telefone"
         android:textSize="24sp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:inputType="number"/>
 
     <EditText
         android:id="@+id/input_chave_pix"

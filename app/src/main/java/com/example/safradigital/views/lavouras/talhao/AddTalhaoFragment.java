@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +29,7 @@ public class AddTalhaoFragment extends Fragment {
     Button btnSalvarTalhao;
     ArrayAdapter<String> arrayAdapter;
     AutoCompleteTextView autoCompleteLavoura;
-    int idLavoura;
+    int idLavoura, precoTalhao;
 
     @Nullable
     @Override
@@ -63,10 +64,31 @@ public class AddTalhaoFragment extends Fragment {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view1, int i, long l) {
                     String nomeLavoura = adapterView.getItemAtPosition(i).toString();
-                    idLavoura = db.getIdLavouraByName(nomeLavoura);
+                    idLavoura = db.getLavouraIdByName(nomeLavoura);
                 }
             });
         }
+
+        btnSalvarTalhao.setOnClickListener(v -> {
+            String nomeTalhao = inputNomeTalhao.getText().toString().trim();
+            String precotemp = inputPrecoTalhao.getText().toString().trim();
+            if(!precotemp.isEmpty()){
+                precoTalhao = Integer.parseInt(precotemp);
+            }
+
+            if(!nomeTalhao.isEmpty()){
+                if(!(precoTalhao == 0)){
+                    db.addTalhao(nomeTalhao, precoTalhao, idLavoura);
+                    Toast.makeText(getContext(), "Talhão salvo com sucesso!", Toast.LENGTH_SHORT).show();
+                    getParentFragmentManager().popBackStack();
+                } else{
+                    inputPrecoTalhao.setError("insira o preço do Talhão!");
+                }
+
+            } else {
+                inputNomeTalhao.setError("Insira o nome do Talhão!");
+            }
+        });
 
         return view;
     }

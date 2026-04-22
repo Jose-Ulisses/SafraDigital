@@ -2,20 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:layout_marginTop="80dp"
-    android:padding="16dp">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:theme="@style/Theme.SafraDigital">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="24dp"
         android:text="Adicionar Talhão"
         android:textSize="24sp"
-        android:layout_marginBottom="24dp"
-        android:layout_gravity="center_horizontal"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        />
+        android:textStyle="bold" />
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -27,26 +26,26 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="lavoura" />
+            android:text="lavoura"
+            android:inputType="none"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <EditText
         android:id="@+id/input_nome_talhao"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nome do talhão"
-        android:textSize="24sp"
         android:layout_marginTop="16dp"
-    />
+        android:hint="Nome do talhão"
+        android:textSize="24sp" />
 
     <EditText
         android:id="@+id/input_preco"
-        android:inputType="number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:hint="Preço do talhão"
-        android:textSize="24sp"
-        android:layout_marginBottom="16dp"/>
+        android:inputType="number"
+        android:textSize="24sp" />
 
     <Button
         android:id="@+id/button_salvar_Lavoura"
