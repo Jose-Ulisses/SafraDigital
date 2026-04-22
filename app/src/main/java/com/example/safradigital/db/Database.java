@@ -6,14 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 public class Database {
-    private Context mContext;
-    private SQLiteDatabase mDatabase;
+    private final SQLiteDatabase mDatabase;
 
     public Database(Context context) {
-        mContext = context.getApplicationContext();
+        Context mContext = context.getApplicationContext();
         mDatabase = new DbHelper(mContext).getWritableDatabase();
     }
-
 
     //----COLHEITA----
     public void addColheita(int idLavoura, int idTalhao, int idFuncionario, float qntd, String data){
@@ -65,6 +63,29 @@ public class Database {
         return idLavoura;
     }
 
+    public float getTotalLavoura(int id){
+        String sql = "SELECT " + DbSchema.LavourasTbl.Cols.TOTAL_LAVOURA +
+                " FROM " + DbSchema.LavourasTbl.NOME_TBL +
+                " WHERE " + DbSchema.LavourasTbl.Cols.ID_LAVOURA + " = ?";
+
+        Cursor c = mDatabase.rawQuery(sql, new String[]{String.valueOf(id)});
+        c.moveToFirst();
+        float total = c.getFloat(c.getColumnIndexOrThrow(DbSchema.LavourasTbl.Cols.TOTAL_LAVOURA));
+        c.close();
+
+        return total;
+    }
+
+    public void insertColheitaLavoura(int idLavoura, float qntd){
+        ContentValues values = new ContentValues();
+        float total = getTotalLavoura(idLavoura);
+        total += qntd;
+
+        values.put(DbSchema.LavourasTbl.Cols.TOTAL_LAVOURA, total);
+        mDatabase.update(DbSchema.LavourasTbl.NOME_TBL, values,
+                DbSchema.LavourasTbl.Cols.ID_LAVOURA + " = ?", new String[]{String.valueOf(idLavoura)});
+    }
+
 
     //----TALHAO----
     public void addTalhao(String nomeTalhao, int preco, int idLavoura){
@@ -86,8 +107,7 @@ public class Database {
     public int getTalhaoIdByName(String talhao) {
         int idTalhao = -1;
 
-        String sql =
-                "SELECT " + DbSchema.TalhaoTbl.Cols.ID_TALHAO +
+        String sql = "SELECT " + DbSchema.TalhaoTbl.Cols.ID_TALHAO +
                         " FROM " + DbSchema.TalhaoTbl.NOME_TBL +
                         " WHERE " + DbSchema.TalhaoTbl.Cols.NOME_TALHAO + " = ?";
 
@@ -104,6 +124,29 @@ public class Database {
                 " WHERE " + DbSchema.TalhaoTbl.Cols.ID_LAVOURA_TALHAO + " = ?";
 
         return mDatabase.rawQuery(sql, new String[]{String.valueOf(idLavoura)});
+    }
+
+    public float getTotalTalhao(int idTalhao){
+        String sql = "SELECT " + DbSchema.TalhaoTbl.Cols.TOTAL_TALHAO +
+                " FROM " + DbSchema.TalhaoTbl.NOME_TBL +
+                " WHERE " + DbSchema.TalhaoTbl.Cols.ID_TALHAO + " = ?";
+
+        Cursor c = mDatabase.rawQuery(sql, new String[]{String.valueOf(idTalhao)});
+        c.moveToFirst();
+        float total = c.getFloat(c.getColumnIndexOrThrow(DbSchema.TalhaoTbl.Cols.TOTAL_TALHAO));
+        c.close();
+
+        return total;
+    }
+
+    public void insertColheitaTalhao(int idTalhao, int idLavoura, float qntd){
+        ContentValues values = new ContentValues();
+        float total = getTotalTalhao(idTalhao);
+        total += qntd;
+
+        values.put(DbSchema.TalhaoTbl.Cols.TOTAL_TALHAO, total);
+        mDatabase.update(DbSchema.TalhaoTbl.NOME_TBL, values,
+                DbSchema.TalhaoTbl.Cols.ID_TALHAO + " = ?", new String[]{String.valueOf(idTalhao)});
     }
 
 
@@ -125,7 +168,7 @@ public class Database {
     }
 
     public int getFuncionarioIdByName(String funcionario) {
-        int idFuncionario = -1;
+        int idFuncionario;
 
         String sql =
                 "SELECT " + DbSchema.FuncionariosTbl.Cols.ID_FUNCIONARIO +

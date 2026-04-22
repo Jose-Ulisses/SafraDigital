@@ -32,7 +32,6 @@ public class AddColheitaFragment extends Fragment {
     int idLavoura, idTalhao, idFuncionario;
     Cursor c;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -130,6 +129,9 @@ public class AddColheitaFragment extends Fragment {
 
             if(!(qntd == 0)){
                 db.addColheita(idLavoura, idTalhao, idFuncionario, qntd, data);
+                db.insertColheitaLavoura(idLavoura, qntd);
+                db.insertColheitaTalhao(idTalhao, idLavoura, qntd);
+
                 Toast.makeText(getContext(), "Colheita salva com sucesso!", Toast.LENGTH_SHORT).show();
                 getParentFragmentManager().popBackStack();
             }else{
