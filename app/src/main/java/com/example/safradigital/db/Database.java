@@ -63,6 +63,20 @@ public class Database {
         return idLavoura;
     }
 
+    public String getLavouraNameById(int id) {
+        String sql =
+                "SELECT " + DbSchema.LavourasTbl.Cols.NOME_LAVOURA +
+                        " FROM " + DbSchema.LavourasTbl.NOME_TBL +
+                        " WHERE " + DbSchema.LavourasTbl.Cols.ID_LAVOURA + " = ?";
+
+        Cursor c = mDatabase.rawQuery(sql, new String[]{String.valueOf(id)});
+        c.moveToFirst();
+        String nomeLavoura = c.getString(c.getColumnIndexOrThrow(DbSchema.LavourasTbl.Cols.NOME_LAVOURA));
+        c.close();
+        return nomeLavoura;
+    }
+
+
     public float getTotalLavoura(int id){
         String sql = "SELECT " + DbSchema.LavourasTbl.Cols.TOTAL_LAVOURA +
                 " FROM " + DbSchema.LavourasTbl.NOME_TBL +
@@ -118,8 +132,22 @@ public class Database {
         return idTalhao;
     }
 
-    public Cursor getAllTalhoesByLavouraId(int idLavoura){
+    public String getTalhaoNameById(int id) {
+
         String sql = "SELECT " + DbSchema.TalhaoTbl.Cols.NOME_TALHAO +
+                " FROM " + DbSchema.TalhaoTbl.NOME_TBL +
+                " WHERE " + DbSchema.TalhaoTbl.Cols.ID_TALHAO + " = ?";
+
+        Cursor c = mDatabase.rawQuery(sql, new String[]{String.valueOf(id)});
+        c.moveToFirst();
+        String talhao = c.getString(c.getColumnIndexOrThrow(DbSchema.TalhaoTbl.Cols.NOME_TALHAO));
+        c.close();
+
+        return talhao;
+    }
+
+    public Cursor getAllTalhoesByLavouraId(int idLavoura){
+        String sql = "SELECT " + "* " +
                 " FROM " + DbSchema.TalhaoTbl.NOME_TBL +
                 " WHERE " + DbSchema.TalhaoTbl.Cols.ID_LAVOURA_TALHAO + " = ?";
 
@@ -161,8 +189,23 @@ public class Database {
         mDatabase.insert(DbSchema.FuncionariosTbl.NOME_TBL, null, funcionarioValues);
     }
 
+    public Cursor getFuncionario(int id){
+        String sql = "SELECT " + "* " +
+                " FROM " + DbSchema.FuncionariosTbl.NOME_TBL +
+                " WHERE " + DbSchema.FuncionariosTbl.Cols.ID_FUNCIONARIO + " = ?";
+
+        return mDatabase.rawQuery(sql, new String[]{String.valueOf(id)});
+    }
+
     public Cursor getAllFuncionarios(){
         String sql = "SELECT * FROM " + DbSchema.FuncionariosTbl.NOME_TBL;
+
+        return mDatabase.rawQuery(sql, null);
+    }
+
+    public Cursor getAllFuncionariosName(){
+        String sql = "SELECT " + DbSchema.FuncionariosTbl.Cols.NOME_FUNCIONARIO +
+                " FROM " + DbSchema.FuncionariosTbl.NOME_TBL;
 
         return mDatabase.rawQuery(sql, null);
     }
@@ -180,5 +223,18 @@ public class Database {
         idFuncionario = c.getInt(c.getColumnIndexOrThrow(DbSchema.FuncionariosTbl.Cols.ID_FUNCIONARIO));
         c.close();
         return idFuncionario;
+    }
+
+    public String getFuncionarioNameById(int id) {
+        String sql =
+                "SELECT " + DbSchema.FuncionariosTbl.Cols.NOME_FUNCIONARIO +
+                        " FROM " + DbSchema.FuncionariosTbl.NOME_TBL +
+                        " WHERE " + DbSchema.FuncionariosTbl.Cols.ID_FUNCIONARIO + " = ?";
+
+        Cursor c = mDatabase.rawQuery(sql, new String[]{String.valueOf(id)});
+        c.moveToFirst();
+        String nomeFuncionario = c.getString(c.getColumnIndexOrThrow(DbSchema.FuncionariosTbl.Cols.NOME_FUNCIONARIO));
+        c.close();
+        return nomeFuncionario;
     }
 }

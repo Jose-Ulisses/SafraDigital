@@ -28,6 +28,14 @@ public class ColheitaFragment extends Fragment {
                     .commit();
         });
 
+        Button btnColheitasAnteriores = view.findViewById(R.id.button_colheitas_anteriores);
+        btnColheitasAnteriores.setOnClickListener(v -> {
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new AllColheitasFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         return view;
     }
 }

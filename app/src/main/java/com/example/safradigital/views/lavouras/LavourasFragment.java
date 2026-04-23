@@ -29,7 +29,7 @@ public class LavourasFragment extends Fragment {
         Button btnViewLavouras = view.findViewById(R.id.button_view_lavouras);
         btnViewLavouras.setOnClickListener(v -> {
             getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new InfoLavourasFragment())
+                    .replace(R.id.fragment_container, new AllLavourasFragment())
                     .addToBackStack(null)
                     .commit();
         });
