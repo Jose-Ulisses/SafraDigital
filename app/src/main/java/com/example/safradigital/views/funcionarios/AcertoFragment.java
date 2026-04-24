@@ -20,7 +20,7 @@ public class AcertoFragment extends Fragment {
     private static final String ARG_FUNCIONARIO = "nomeFuncionario";
     private String nomeFuncionario;
     Database db;
-    TextView mTextView, tvnomeFuncionario, tvTotalAcerto;
+    TextView mTextView, tvnomeFuncionario;
 
     public static AcertoFragment newInstance(String nomeFuncionario) {
         AcertoFragment fragment = new AcertoFragment();
