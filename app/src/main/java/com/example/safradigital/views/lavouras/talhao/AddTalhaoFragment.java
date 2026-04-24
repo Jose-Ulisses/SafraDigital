@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -57,12 +56,9 @@ public class AddTalhaoFragment extends Fragment {
         if (autoCompleteLavoura != null) {
             autoCompleteLavoura.setAdapter(arrayAdapter);
 
-            autoCompleteLavoura.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view1, int i, long l) {
-                    String nomeLavoura = adapterView.getItemAtPosition(i).toString();
-                    idLavoura = db.getLavouraIdByName(nomeLavoura);
-                }
+            autoCompleteLavoura.setOnItemClickListener((adapterView, view1, i, l) -> {
+                String nomeLavoura = adapterView.getItemAtPosition(i).toString();
+                idLavoura = db.getLavouraIdByName(nomeLavoura);
             });
         }
 

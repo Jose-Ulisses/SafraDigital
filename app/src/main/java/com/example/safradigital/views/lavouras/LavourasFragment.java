@@ -19,28 +19,22 @@ public class LavourasFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_lavouras, container, false);
 
         Button btnAddLavoura = view.findViewById(R.id.button_add_lavoura);
-        btnAddLavoura.setOnClickListener(v -> {
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new AddLavouraFragment())
-                    .addToBackStack(null)
-                    .commit();
-        });
+        btnAddLavoura.setOnClickListener(v -> getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new AddLavouraFragment())
+                .addToBackStack(null)
+                .commit());
 
         Button btnViewLavouras = view.findViewById(R.id.button_view_lavouras);
-        btnViewLavouras.setOnClickListener(v -> {
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new AllLavourasFragment())
-                    .addToBackStack(null)
-                    .commit();
-        });
+        btnViewLavouras.setOnClickListener(v -> getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new AllLavourasFragment())
+                .addToBackStack(null)
+                .commit());
 
         Button btnAddTalhao = view.findViewById(R.id.button_add_talhao);
-        btnAddTalhao.setOnClickListener(v -> {
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new AddTalhaoFragment())
-                    .addToBackStack(null)
-                    .commit();
-        });
+        btnAddTalhao.setOnClickListener(v -> getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new AddTalhaoFragment())
+                .addToBackStack(null)
+                .commit());
 
         return view;
     }
