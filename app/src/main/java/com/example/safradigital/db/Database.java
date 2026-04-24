@@ -6,11 +6,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 public class Database {
-    private final SQLiteDatabase mDatabase;
+    private SQLiteDatabase mDatabase;
+    private final DbHelper mDbHelper;
 
     public Database(Context context) {
-        Context mContext = context.getApplicationContext();
-        mDatabase = new DbHelper(mContext).getWritableDatabase();
+        mDbHelper = new DbHelper(context.getApplicationContext());
+        open();
+    }
+
+    private void open() {
+        if (mDatabase == null || !mDatabase.isOpen()) {
+            mDatabase = mDbHelper.getWritableDatabase();
+        }
     }
 
     //----COLHEITA----
