@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -57,37 +56,31 @@ public class AddColheitaFragment extends Fragment {
         if (autoCompleteLavoura != null) {
             autoCompleteLavoura.setAdapter(arrayAdapterLavoura);
 
-            autoCompleteLavoura.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view1, int i, long l) {
-                    String nomeLavoura = adapterView.getItemAtPosition(i).toString();
-                    idLavoura = db.getLavouraIdByName(nomeLavoura);
+            autoCompleteLavoura.setOnItemClickListener((adapterView, view1, i, l) -> {
+                String nomeLavoura = adapterView.getItemAtPosition(i).toString();
+                idLavoura = db.getLavouraIdByName(nomeLavoura);
 
-                    //DROPDOWN MENU FOR TALHÕES BY LAVOURA ID
-                    List<String> talhoes = new ArrayList<>();
-                    c = db.getAllTalhoesByLavouraId(idLavoura);
-                    if(c != null){
-                        if (c.moveToFirst()) {
-                            int indexNome = c.getColumnIndex(DbSchema.TalhaoTbl.Cols.NOME_TALHAO);
-                            while(!c.isAfterLast()){
-                                talhoes.add(c.getString(indexNome));
-                                c.moveToNext();
-                            }
+                //DROPDOWN MENU FOR TALHÕES BY LAVOURA ID
+                List<String> talhoes = new ArrayList<>();
+                c = db.getAllTalhoesByLavouraId(idLavoura);
+                if(c != null){
+                    if (c.moveToFirst()) {
+                        int indexNome = c.getColumnIndex(DbSchema.TalhaoTbl.Cols.NOME_TALHAO);
+                        while(!c.isAfterLast()){
+                            talhoes.add(c.getString(indexNome));
+                            c.moveToNext();
                         }
-                        c.close();
                     }
-                    arrayAdapterTalhao = new ArrayAdapter<>(requireContext(), R.layout.dropdown_item, R.id.textView, talhoes);
-                    autoCompleteTalhao = view.findViewById(R.id.autoCompleteTalhao);
-                    if (autoCompleteTalhao != null) {
-                        autoCompleteTalhao.setAdapter(arrayAdapterTalhao);
-                        autoCompleteTalhao.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                            @Override
-                            public void onItemClick(AdapterView<?> adapterView, View view1, int i, long l) {
-                                String nomeTalhao = adapterView.getItemAtPosition(i).toString();
-                                idTalhao = db.getTalhaoIdByName(nomeTalhao);
-                            }
-                        });
-                    }
+                    c.close();
+                }
+                arrayAdapterTalhao = new ArrayAdapter<>(requireContext(), R.layout.dropdown_item, R.id.textView, talhoes);
+                autoCompleteTalhao = view.findViewById(R.id.autoCompleteTalhao);
+                if (autoCompleteTalhao != null) {
+                    autoCompleteTalhao.setAdapter(arrayAdapterTalhao);
+                    autoCompleteTalhao.setOnItemClickListener((adapterView1, view2, i1, l1) -> {
+                        String nomeTalhao = adapterView1.getItemAtPosition(i1).toString();
+                        idTalhao = db.getTalhaoIdByName(nomeTalhao);
+                    });
                 }
             });
 
@@ -108,12 +101,9 @@ public class AddColheitaFragment extends Fragment {
             autoCompleteFuncionario = view.findViewById(R.id.autoCompleteFuncionario);
             if (autoCompleteFuncionario != null) {
                 autoCompleteFuncionario.setAdapter(arrayAdapterFuncionario);
-                autoCompleteFuncionario.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view1, int i, long l) {
-                        String nomeFuncionario = adapterView.getItemAtPosition(i).toString();
-                        idFuncionario = db.getFuncionarioIdByName(nomeFuncionario);
-                    }
+                autoCompleteFuncionario.setOnItemClickListener((adapterView, view1, i, l) -> {
+                    String nomeFuncionario = adapterView.getItemAtPosition(i).toString();
+                    idFuncionario = db.getFuncionarioIdByName(nomeFuncionario);
                 });
             }
         }
