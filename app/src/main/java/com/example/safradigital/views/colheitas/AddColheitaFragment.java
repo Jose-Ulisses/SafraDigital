@@ -51,6 +51,7 @@ public class AddColheitaFragment extends Fragment {
             }
             c.close();
         }
+
         arrayAdapterLavoura = new ArrayAdapter<>(requireContext(), R.layout.dropdown_item, R.id.textView, lavouras);
         autoCompleteLavoura = view.findViewById(R.id.autoCompleteLavouraColheita);
         if (autoCompleteLavoura != null) {
@@ -130,7 +131,7 @@ public class AddColheitaFragment extends Fragment {
             if(!(qntd == 0)){
                 db.addColheita(idLavoura, idTalhao, idFuncionario, qntd, data);
                 db.insertColheitaLavoura(idLavoura, qntd);
-                db.insertColheitaTalhao(idTalhao, idLavoura, qntd);
+                db.insertColheitaTalhao(idTalhao, qntd);
 
                 Toast.makeText(getContext(), "Colheita salva com sucesso!", Toast.LENGTH_SHORT).show();
                 getParentFragmentManager().popBackStack();

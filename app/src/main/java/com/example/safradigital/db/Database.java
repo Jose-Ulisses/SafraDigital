@@ -69,8 +69,6 @@ public class Database {
     }
 
     public int getLavouraIdByName(String lavoura) {
-        int idLavoura = -1;
-
         String sql =
                 "SELECT " + DbSchema.LavourasTbl.Cols.ID_LAVOURA +
                         " FROM " + DbSchema.LavourasTbl.NOME_TBL +
@@ -78,7 +76,7 @@ public class Database {
 
         Cursor c = mDatabase.rawQuery(sql, new String[]{lavoura});
         c.moveToFirst();
-        idLavoura = c.getInt(c.getColumnIndexOrThrow(DbSchema.LavourasTbl.Cols.ID_LAVOURA));
+        int idLavoura = c.getInt(c.getColumnIndexOrThrow(DbSchema.LavourasTbl.Cols.ID_LAVOURA));
         c.close();
         return idLavoura;
     }
@@ -132,22 +130,14 @@ public class Database {
         mDatabase.insert(DbSchema.TalhaoTbl.NOME_TBL, null, talhaoValues);
     }
 
-    public Cursor getAllTalhoes(){
-        String sql = "SELECT * FROM " + DbSchema.TalhaoTbl.NOME_TBL;
-
-        return mDatabase.rawQuery(sql, null);
-    }
-
     public int getTalhaoIdByName(String talhao) {
-        int idTalhao = -1;
-
         String sql = "SELECT " + DbSchema.TalhaoTbl.Cols.ID_TALHAO +
                         " FROM " + DbSchema.TalhaoTbl.NOME_TBL +
                         " WHERE " + DbSchema.TalhaoTbl.Cols.NOME_TALHAO + " = ?";
 
         Cursor c = mDatabase.rawQuery(sql, new String[]{talhao});
         c.moveToFirst();
-        idTalhao = c.getInt(c.getColumnIndexOrThrow(DbSchema.TalhaoTbl.Cols.ID_TALHAO));
+        int idTalhao = c.getInt(c.getColumnIndexOrThrow(DbSchema.TalhaoTbl.Cols.ID_TALHAO));
         c.close();
         return idTalhao;
     }
@@ -201,7 +191,7 @@ public class Database {
         return preco;
     }
 
-    public void insertColheitaTalhao(int idTalhao, int idLavoura, float qntd){
+    public void insertColheitaTalhao(int idTalhao, float qntd){
         ContentValues values = new ContentValues();
         float total = getTotalTalhao(idTalhao);
         total += qntd;
