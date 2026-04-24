@@ -41,14 +41,18 @@ public class AcertoFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_info, container, false);
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
         float totalAcerto = 0;
 
         LinearLayout linearLayout = view.findViewById(R.id.linearLayoutList);
 
         db = new Database(requireContext());
-        tvnomeFuncionario = view.findViewById(R.id.textViewTitle);
+        tvnomeFuncionario = new TextView(requireContext());
         tvnomeFuncionario.setText(nomeFuncionario);
+        tvnomeFuncionario.setTextSize(45);
+        tvnomeFuncionario.setPadding(0, 0, 0, 70);
+        tvnomeFuncionario.setGravity(1);
+        linearLayout.addView(tvnomeFuncionario);
 
         int idFuncionario = db.getFuncionarioIdByName(nomeFuncionario);
         Cursor c = db.getAcerto(idFuncionario);
