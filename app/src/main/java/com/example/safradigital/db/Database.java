@@ -32,6 +32,19 @@ public class Database {
         return mDatabase.rawQuery(sql, null);
     }
 
+    public Cursor getAcerto(int id){
+        String sql = "SELECT " +
+                DbSchema.ColheitasTbl.Cols.ID_LAVOURA + ", " +
+                DbSchema.ColheitasTbl.Cols.ID_TALHAO + ", " +
+                DbSchema.ColheitasTbl.Cols.QNTD + ", " +
+                "SUM(" + DbSchema.ColheitasTbl.Cols.QNTD + ") AS total" +
+                " FROM " + DbSchema.ColheitasTbl.NOME_TBL +
+                " WHERE " + DbSchema.ColheitasTbl.Cols.ID_FUNCIONARIO + " = ?" +
+                " GROUP BY " + DbSchema.ColheitasTbl.Cols.ID_LAVOURA + ", " +
+                DbSchema.ColheitasTbl.Cols.ID_TALHAO;
+
+        return mDatabase.rawQuery(sql, new String[]{String.valueOf(id)});
+    }
 
     //----LAVOURA----
     public void addLavoura(String nomeLavoura){
@@ -165,6 +178,20 @@ public class Database {
         c.close();
 
         return total;
+    }
+
+    public int getPrecoTalhao(int id){
+        String sql = "SELECT " +
+                DbSchema.TalhaoTbl.Cols.PRECO_TALHAO +
+                " FROM " + DbSchema.TalhaoTbl.NOME_TBL +
+                " WHERE " + DbSchema.TalhaoTbl.Cols.ID_TALHAO + " = ?";
+
+        Cursor c = mDatabase.rawQuery(sql, new String[]{String.valueOf(id)});
+        c.moveToFirst();
+        int preco = c.getInt(c.getColumnIndexOrThrow(DbSchema.TalhaoTbl.Cols.PRECO_TALHAO));
+        c.close();
+
+        return preco;
     }
 
     public void insertColheitaTalhao(int idTalhao, int idLavoura, float qntd){
