@@ -86,7 +86,7 @@ public class InfoFuncionarioFragment extends Fragment {
         btnAcerto.setOnClickListener(v -> {
             AcertoFragment fragment = AcertoFragment.newInstance(nomeFuncionario);
             getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new AcertoFragment())
+                    .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)
                     .commit();
         });
