@@ -1,7 +1,7 @@
 package com.example.safradigital.views.funcionarios;
 
-import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,19 +12,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.safradigital.R;
-import com.example.safradigital.db.Database;
-import com.example.safradigital.db.DbSchema;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class InfoFuncionarioFragment extends Fragment {
-    private static final String ARG_FUNCIONARIO = "nomeFuncionario";
+    private static final String ARG_ID_FUNCIONARIO = "id_funcionario";
+    private static final String ARG_NOME_FUNCIONARIO = "nome_funcionario";
+    
+    private String idFuncionario;
     private String nomeFuncionario;
-    Database db;
-    TextView tvnomeFuncionario, mTextView;
+    private final FirebaseFirestore dbFirestore = FirebaseFirestore.getInstance();
+    private LinearLayout linearLayout;
 
-    public static InfoFuncionarioFragment newInstance(String nomeFuncionario) {
+    public static InfoFuncionarioFragment newInstance(String idFuncionario, String nomeFuncionario) {
         InfoFuncionarioFragment fragment = new InfoFuncionarioFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_FUNCIONARIO, nomeFuncionario);
+        args.putString(ARG_ID_FUNCIONARIO, idFuncionario);
+        args.putString(ARG_NOME_FUNCIONARIO, nomeFuncionario);
         fragment.setArguments(args);
         return fragment;
     }
@@ -33,7 +36,8 @@ public class InfoFuncionarioFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            nomeFuncionario = getArguments().getString(ARG_FUNCIONARIO);
+            idFuncionario = getArguments().getString(ARG_ID_FUNCIONARIO);
+            nomeFuncionario = getArguments().getString(ARG_NOME_FUNCIONARIO);
         }
     }
 
@@ -42,49 +46,15 @@ public class InfoFuncionarioFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_info_funcionario, container, false);
 
-        LinearLayout linearLayout = view.findViewById(R.id.linearLayoutList);
+        linearLayout = view.findViewById(R.id.linearLayoutList);
+        TextView tvNome = view.findViewById(R.id.textViewTitle);
+        tvNome.setText(nomeFuncionario);
 
-        db = new Database(requireContext());
-        tvnomeFuncionario = view.findViewById(R.id.textViewTitle);
-        tvnomeFuncionario.setText(nomeFuncionario);
-
-        int idFuncionario = db.getFuncionarioIdByName(nomeFuncionario);
-        Cursor c = db.getFuncionario(idFuncionario);
-        if(c != null){
-            c.moveToFirst();
-
-            String cpf = c.getString(c.getColumnIndexOrThrow(DbSchema.FuncionariosTbl.Cols.CPF_FUNCIONARIO));
-            String telefone = c.getString(c.getColumnIndexOrThrow(DbSchema.FuncionariosTbl.Cols.TELEFONE_FUNCIONARIO));
-            String chavePix = c.getString(c.getColumnIndexOrThrow(DbSchema.FuncionariosTbl.Cols.PIX_FUNCIONARIO));
-
-            mTextView = new TextView(requireContext());
-            String tempCpf = "CPF: " + cpf;
-            mTextView.setText(tempCpf);
-            mTextView.setTextSize(30);
-            mTextView.setPadding(0, 70, 0, 70);
-            linearLayout.addView(mTextView);
-
-            mTextView = new TextView(requireContext());
-            String tempTelefone = "Número: " + telefone;
-
-            mTextView.setText(tempTelefone);
-            mTextView.setTextSize(30);
-            mTextView.setPadding(0, 70, 0, 70);
-            linearLayout.addView(mTextView);
-
-            mTextView = new TextView(requireContext());
-            String tempPix = "Chave Pix: " + chavePix;
-            mTextView.setText(tempPix);
-            mTextView.setTextSize(30);
-            mTextView.setPadding(0, 70, 0, 70);
-            linearLayout.addView(mTextView);
-
-            c.close();
-        }
+        carregarDetalhes();
 
         Button btnAcerto = view.findViewById(R.id.button_acerto);
         btnAcerto.setOnClickListener(v -> {
-            AcertoFragment fragment = AcertoFragment.newInstance(nomeFuncionario);
+            AcertoFragment fragment = AcertoFragment.newInstance(idFuncionario, nomeFuncionario);
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack(null)
@@ -92,5 +62,32 @@ public class InfoFuncionarioFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void carregarDetalhes() {
+        dbFirestore.collection("funcionarios").document(idFuncionario)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String cpf = documentSnapshot.getString("cpf");
+                        String telefone = documentSnapshot.getString("telefone");
+                        String chavePix = documentSnapshot.getString("chavePix");
+
+                        linearLayout.removeAllViews();
+
+                        adicionarTextView(getString(R.string.label_cpf, cpf));
+                        adicionarTextView(getString(R.string.label_telefone, telefone));
+                        adicionarTextView(getString(R.string.label_pix, chavePix));
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("Firestore", "Erro ao buscar detalhes do funcionário", e));
+    }
+
+    private void adicionarTextView(String texto) {
+        TextView textView = new TextView(requireContext());
+        textView.setText(texto);
+        textView.setTextSize(30);
+        textView.setPadding(0, 70, 0, 70);
+        linearLayout.addView(textView);
     }
 }

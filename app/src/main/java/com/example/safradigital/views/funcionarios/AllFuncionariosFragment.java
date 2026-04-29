@@ -1,56 +1,64 @@
 package com.example.safradigital.views.funcionarios;
 
-import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.safradigital.R;
-import com.example.safradigital.db.Database;
-import com.example.safradigital.db.DbSchema;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class AllFuncionariosFragment extends Fragment {
-    Database db;
-    TextView mTextView;
+    private final FirebaseFirestore dbFirestore = FirebaseFirestore.getInstance();
+    private LinearLayout linearLayout;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        db = new Database(requireContext());
+        linearLayout = view.findViewById(R.id.linearLayoutList);
 
-        Cursor c = db.getAllFuncionariosName();
-        if(c != null){
-            c.moveToFirst();
-            while(!c.isAfterLast()){
-                String funcionario = c.getString(c.getColumnIndexOrThrow(DbSchema.FuncionariosTbl.Cols.NOME_FUNCIONARIO));
-
-                mTextView = new TextView(requireContext());
-                mTextView.setText(funcionario);
-                mTextView.setTextSize(45);
-                mTextView.setPadding(0, 70, 0, 70);
-                mTextView.setOnClickListener(v -> {
-                    InfoFuncionarioFragment fragment = InfoFuncionarioFragment.newInstance(funcionario);
-                    getParentFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, fragment)
-                            .addToBackStack(null)
-                            .commit();
-                });
-
-                LinearLayout linearLayout = view.findViewById(R.id.linearLayoutList);
-                linearLayout.addView(mTextView);
-
-                c.moveToNext();
-            }
-            c.close();
-        }
+        listarFuncionarios();
 
         return view;
     }
 
+    private void listarFuncionarios() {
+        dbFirestore.collection("funcionarios")
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Log.e("Firestore", "Erro ao escutar funcionários", error);
+                        Toast.makeText(getContext(), R.string.erro_carregar_dados, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (value != null) {
+                        linearLayout.removeAllViews();
+                        for (QueryDocumentSnapshot doc : value) {
+                            String nome = doc.getString("nomeFuncionario");
+                            if (nome != null) {
+                                TextView mTextView = new TextView(requireContext());
+                                mTextView.setText(nome);
+                                mTextView.setTextSize(45);
+                                mTextView.setPadding(0, 70, 0, 70);
+                                mTextView.setOnClickListener(v -> {
+                                    InfoFuncionarioFragment fragment = InfoFuncionarioFragment.newInstance(doc.getId(), nome);
+                                    getParentFragmentManager().beginTransaction()
+                                            .replace(R.id.fragment_container, fragment)
+                                            .addToBackStack(null)
+                                            .commit();
+                                });
+                                linearLayout.addView(mTextView);
+                            }
+                        }
+                    }
+                });
+    }
 }

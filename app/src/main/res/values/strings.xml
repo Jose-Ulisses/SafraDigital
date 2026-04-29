@@ -1,4 +1,30 @@
 <resources>
     <string name="app_name">SafraDigital</string>
     <string name="adicionar_colheita">adicionar colheita</string>
+    <string name="talhao_salvo_sucesso">Talhão salvo com sucesso!</string>
+    <string name="erro_salvar_talhao">Erro ao salvar talhão</string>
+    <string name="selecione_lavoura">Selecione uma lavoura!</string>
+    <string name="insira_preco_talhao">Insira o preço do Talhão!</string>
+    <string name="insira_nome_talhao">Insira o nome do Talhão!</string>
+    <string name="erro_buscar_lavouras">Erro ao buscar lavouras</string>
+    <string name="funcionario_salvo_sucesso">Funcionário salvo com sucesso!</string>
+    <string name="erro_salvar_funcionario">Erro ao salvar funcionário</string>
+    <string name="insira_nome_funcionario">Por favor, insira o nome do Funcionário</string>
+    <string name="insira_cpf_funcionario">Por favor, insira o cpf do Funcionário</string>
+    <string name="insira_telefone_funcionario">Por favor, insira o telefone do Funcionário</string>
+    <string name="insira_pix_funcionario">Por favor, insira a chave PIX do Funcionário</string>
+    <string name="colheita_salva_sucesso">Colheita salva com sucesso!</string>
+    <string name="erro_salvar_colheita">Erro ao salvar colheita</string>
+    <string name="informe_quantidade">Informe a quantidade colhida!</string>
+    <string name="selecione_talhao">Selecione um talhão!</string>
+    <string name="selecione_funcionario">Selecione um funcionário!</string>
+    <string name="erro_buscar_talhoes">Erro ao buscar talhões</string>
+    <string name="erro_buscar_funcionarios">Erro ao buscar funcionários</string>
+    <string name="total_lavoura_label">Total da Lavoura: %1$.2f</string>
+    <string name="erro_carregar_dados">Erro ao carregar dados</string>
+    <string name="label_cpf">CPF: %1$s</string>
+    <string name="label_telefone">Número: %1$s</string>
+    <string name="label_pix">Chave Pix: %1$s</string>
+    <string name="label_total_acerto">Total a acertar: R$%1$.2f</string>
+    <string name="info_acerto_item">Lavoura: %1$s\nTalhão: %2$s\nQuantidade: %3$.2f\nTotal do Talhão: R$%4$.2f</string>
 </resources>
