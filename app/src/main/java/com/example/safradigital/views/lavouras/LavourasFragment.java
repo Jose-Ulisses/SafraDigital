@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -18,19 +17,19 @@ public class LavourasFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lavouras, container, false);
 
-        Button btnAddLavoura = view.findViewById(R.id.button_add_lavoura);
+        View btnAddLavoura = view.findViewById(R.id.button_add_lavoura_container);
         btnAddLavoura.setOnClickListener(v -> getParentFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new AddLavouraFragment())
                 .addToBackStack(null)
                 .commit());
 
-        Button btnViewLavouras = view.findViewById(R.id.button_view_lavouras);
+        View btnViewLavouras = view.findViewById(R.id.button_view_lavouras_container);
         btnViewLavouras.setOnClickListener(v -> getParentFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new AllLavourasFragment())
                 .addToBackStack(null)
                 .commit());
 
-        Button btnAddTalhao = view.findViewById(R.id.button_add_talhao);
+        View btnAddTalhao = view.findViewById(R.id.button_add_talhao_container);
         btnAddTalhao.setOnClickListener(v -> getParentFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new AddTalhaoFragment())
                 .addToBackStack(null)

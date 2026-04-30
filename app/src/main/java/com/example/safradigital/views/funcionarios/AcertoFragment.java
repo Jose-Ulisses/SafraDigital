@@ -1,5 +1,6 @@
 package com.example.safradigital.views.funcionarios;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -57,8 +58,9 @@ public class AcertoFragment extends Fragment {
 
         TextView tvNome = new TextView(requireContext());
         tvNome.setText(nomeFuncionario);
-        tvNome.setTextSize(45);
-        tvNome.setPadding(0, 0, 0, 70);
+        tvNome.setTextColor(requireContext().getColor(R.color.primary));
+        tvNome.setTextSize(32);
+        tvNome.setPadding(0, 0, 0, 48);
         tvNome.setGravity(Gravity.CENTER);
         linearLayout.addView(tvNome);
 
@@ -78,13 +80,13 @@ public class AcertoFragment extends Fragment {
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         String idL = doc.getString("idLavoura");
                         String idT = doc.getString("idTalhao");
-                        Double qntd = doc.getDouble("quantidade");
-                        if (qntd == null) qntd = 0.0;
+                        Double qntdVal = doc.getDouble("quantidade");
+                        if (qntdVal == null) qntdVal = 0.0;
 
                         String key = idL + "_" + idT;
                         Float currentTotal = agregacao.get(key);
                         if (currentTotal == null) currentTotal = 0f;
-                        agregacao.put(key, currentTotal + qntd.floatValue());
+                        agregacao.put(key, currentTotal + qntdVal.floatValue());
                         keysMapping.put(key, idL + "|" + idT);
                     }
 
@@ -93,6 +95,7 @@ public class AcertoFragment extends Fragment {
                 .addOnFailureListener(e -> Log.e("Firestore", "Erro ao buscar colheitas para acerto", e));
     }
 
+    @SuppressLint("SetTextI18n")
     private void processarAgregados(Map<String, Float> agregacao, Map<String, String> keysMapping) {
         if (agregacao.isEmpty()) return;
 
@@ -123,21 +126,36 @@ public class AcertoFragment extends Fragment {
                 float valorItem = totalQntd * precoT;
                 totalGeral[0] += valorItem;
 
-                TextView itemTv = new TextView(requireContext());
-                itemTv.setText(getString(R.string.info_acerto_item, nomeL, nomeT, totalQntd, valorItem));
-                itemTv.setTextSize(30);
-                itemTv.setPadding(0, 70, 0, 70);
-                linearLayout.addView(itemTv);
+                View itemView = LayoutInflater.from(requireContext()).inflate(R.layout.item_list, linearLayout, false);
+                TextView titleView = itemView.findViewById(R.id.text_item_name);
+                TextView descView = itemView.findViewById(R.id.text_item_description);
+
+                titleView.setText(String.format("%s - %s", nomeL, nomeT));
+                String details = String.format(java.util.Locale.getDefault(),
+                        "Qtd: %.2f\n\n" + "Preço: R$ %d\n\n" + "Subtotal: R$ %.2f", totalQntd, precoT, valorItem);
+                descView.setText(details);
+                descView.setVisibility(View.VISIBLE);
+
+                linearLayout.addView(itemView);
             }));
         }
 
         Tasks.whenAllComplete(tasks).addOnCompleteListener(t -> {
-            TextView totalTv = new TextView(requireContext());
-            totalTv.setText(getString(R.string.label_total_acerto, totalGeral[0]));
-            totalTv.setTextSize(40);
-            totalTv.setPadding(0, 70, 0, 70);
-            totalTv.setGravity(Gravity.CENTER);
-            linearLayout.addView(totalTv);
+            View totalView = LayoutInflater.from(requireContext()).inflate(R.layout.item_list, linearLayout, false);
+            TextView titleView = totalView.findViewById(R.id.text_item_name);
+            TextView descView = totalView.findViewById(R.id.text_item_description);
+
+            totalView.setAlpha(0.95f);
+            titleView.setText("Total a acertar:");
+            titleView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            
+            descView.setText(String.format(java.util.Locale.getDefault(), "R$ %.2f", totalGeral[0]));
+            descView.setTextColor(requireContext().getColor(R.color.primary));
+            descView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            descView.setTextSize(25);
+            descView.setVisibility(View.VISIBLE);
+
+            linearLayout.addView(totalView);
         });
     }
 }

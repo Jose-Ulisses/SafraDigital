@@ -27,4 +27,11 @@
     <string name="label_pix">Chave Pix: %1$s</string>
     <string name="label_total_acerto">Total a acertar: R$%1$.2f</string>
     <string name="info_acerto_item">Lavoura: %1$s\nTalhão: %2$s\nQuantidade: %3$.2f\nTotal do Talhão: R$%4$.2f</string>
+    <string name="registrar_colheita">Registrar Colheita</string>
+    <string name="lavoura">Lavoura</string>
+    <string name="quantidade_colhida_sacas">Quantidade Colhida (Sacas)</string>
+    <string name="funcionario">Funcionário</string>
+    <string name="talhao">Talhão</string>
+    <string name="salvar_colheita">Salvar Colheita</string>
+    <string name="realizar_acerto">Realizar Acerto</string>
 </resources>

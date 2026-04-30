@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -42,11 +43,12 @@ public class AddLavouraFragment extends Fragment {
 
                 dbfirestore.collection("lavouras")
                         .add(lavoura)
-                        .addOnSuccessListener(documentReference ->
-                                Log.d(TAG, "lavouraDocument added witch ID: " + documentReference.getId()))
-
+                        .addOnSuccessListener(documentReference -> {
+                            Toast.makeText(getContext(), "Lavoura salva com sucesso!", Toast.LENGTH_SHORT).show();
+                            getParentFragmentManager().popBackStack();
+                        })
                         .addOnFailureListener(e ->
-                                Log.w(TAG, "Error adding lavouradocument", e));
+                                Log.w(TAG, "Erro adicionando lavouradocument", e));
             } else {
                 inputNomeLavoura.setError("Por favor, insira o nome da lavoura");
             }

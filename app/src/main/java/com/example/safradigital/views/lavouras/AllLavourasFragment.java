@@ -46,18 +46,19 @@ public class AllLavourasFragment extends Fragment {
                         for (QueryDocumentSnapshot doc : value) {
                             String nome = doc.getString("nomeLavoura");
                             if (nome != null) {
-                                TextView mTextView = new TextView(requireContext());
+                                View itemView = LayoutInflater.from(requireContext()).inflate(R.layout.item_list, linearLayout, false);
+                                TextView mTextView = itemView.findViewById(R.id.text_item_name);
+                                View container = itemView.findViewById(R.id.item_container);
+                                
                                 mTextView.setText(nome);
-                                mTextView.setTextSize(45);
-                                mTextView.setPadding(0, 70, 0, 70);
-                                mTextView.setOnClickListener(v -> {
+                                container.setOnClickListener(v -> {
                                     InfoLavouraFragment fragment = InfoLavouraFragment.newInstance(doc.getId(), nome);
                                     getParentFragmentManager().beginTransaction()
                                             .replace(R.id.fragment_container, fragment)
                                             .addToBackStack(null)
                                             .commit();
                                 });
-                                linearLayout.addView(mTextView);
+                                linearLayout.addView(itemView);
                             }
                         }
                     }

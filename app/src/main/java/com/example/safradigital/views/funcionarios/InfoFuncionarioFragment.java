@@ -75,19 +75,23 @@ public class InfoFuncionarioFragment extends Fragment {
 
                         linearLayout.removeAllViews();
 
-                        adicionarTextView(getString(R.string.label_cpf, cpf));
-                        adicionarTextView(getString(R.string.label_telefone, telefone));
-                        adicionarTextView(getString(R.string.label_pix, chavePix));
+                        adicionarItemInfo("CPF", cpf);
+                        adicionarItemInfo("Telefone", telefone);
+                        adicionarItemInfo("Chave PIX", chavePix);
                     }
                 })
                 .addOnFailureListener(e -> Log.e("Firestore", "Erro ao buscar detalhes do funcionário", e));
     }
 
-    private void adicionarTextView(String texto) {
-        TextView textView = new TextView(requireContext());
-        textView.setText(texto);
-        textView.setTextSize(30);
-        textView.setPadding(0, 70, 0, 70);
-        linearLayout.addView(textView);
+    private void adicionarItemInfo(String label, String valor) {
+        View itemView = LayoutInflater.from(requireContext()).inflate(R.layout.item_list, linearLayout, false);
+        TextView titleView = itemView.findViewById(R.id.text_item_name);
+        TextView descView = itemView.findViewById(R.id.text_item_description);
+
+        titleView.setText(label);
+        descView.setText(valor);
+        descView.setVisibility(View.VISIBLE);
+
+        linearLayout.addView(itemView);
     }
 }

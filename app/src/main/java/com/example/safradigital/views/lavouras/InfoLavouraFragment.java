@@ -1,5 +1,6 @@
 package com.example.safradigital.views.lavouras;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,6 +57,7 @@ public class InfoLavouraFragment extends Fragment {
         return view;
     }
 
+    @SuppressLint("SetTextI18n")
     private void carregarDetalhesLavoura() {
         // Carregar Talhões
         dbFirestore.collection("talhoes")
@@ -74,18 +76,18 @@ public class InfoLavouraFragment extends Fragment {
                             String talhao = doc.getString("nomeTalhao");
                             Double totalTalhao = doc.getDouble("totalTalhao");
                             if (totalTalhao == null) totalTalhao = 0.0;
-                            
-                            String text = talhao + " = " + totalTalhao;
 
-                            TextView mTextView = new TextView(requireContext());
-                            mTextView.setText(text);
-                            mTextView.setTextSize(30);
-                            mTextView.setPadding(0, 70, 0, 70);
+                            View itemView = LayoutInflater.from(requireContext()).inflate(R.layout.item_list, linearLayout, false);
+                            TextView titleView = itemView.findViewById(R.id.text_item_name);
+                            TextView descView = itemView.findViewById(R.id.text_item_description);
 
-                            linearLayout.addView(mTextView);
+                            titleView.setText(talhao);
+                            descView.setText("Total Colhido: " + totalTalhao + " sacas");
+                            descView.setVisibility(View.VISIBLE);
+
+                            linearLayout.addView(itemView);
                         }
-                        
-                        // Após listar talhões, buscar total da lavoura
+
                         dbFirestore.collection("lavouras").document(idLavoura)
                                 .get()
                                 .addOnSuccessListener(documentSnapshot -> {
@@ -94,11 +96,15 @@ public class InfoLavouraFragment extends Fragment {
                                     Double total = documentSnapshot.getDouble("totalLavoura");
                                     if (total == null) total = 0.0;
 
-                                    TextView tvTotal = new TextView(requireContext());
-                                    tvTotal.setText(getString(R.string.total_lavoura_label, total));
-                                    tvTotal.setTextSize(30);
-                                    tvTotal.setPadding(0, 140, 0, 0);
-                                    linearLayout.addView(tvTotal);
+                                    View itemView = LayoutInflater.from(requireContext()).inflate(R.layout.item_list, linearLayout, false);
+                                    TextView titleView = itemView.findViewById(R.id.text_item_name);
+                                    TextView descView = itemView.findViewById(R.id.text_item_description);
+
+                                    titleView.setText("Total da Lavoura");
+                                    descView.setText(total + " Sacas");
+                                    descView.setVisibility(View.VISIBLE);
+
+                                    linearLayout.addView(itemView);
                                 });
                     }
                 });
