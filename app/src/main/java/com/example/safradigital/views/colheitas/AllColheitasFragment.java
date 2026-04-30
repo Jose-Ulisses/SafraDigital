@@ -77,11 +77,9 @@ public class AllColheitasFragment extends Fragment {
                                 });
                             }
 
-                            Runnable updateDetails = () -> {
-                                descView.setText(String.format(java.util.Locale.getDefault(),
-                                        "Lavoura: %s\n\nTalhão: %s\n\nFunc.: %s\n\nQtd: %.2f\n\nData: %s",
-                                        nomeL[0], nomeT[0], nomeF[0], qntd != null ? qntd : 0.0, data));
-                            };
+                            Runnable updateDetails = () -> descView.setText(String.format(java.util.Locale.getDefault(),
+                                    "Lavoura: %s\n\nTalhão: %s\n\nFunc.: %s\n\nQtd: %.2f\n\nData: %s",
+                                    nomeL[0], nomeT[0], nomeF[0], qntd != null ? qntd : 0.0, data));
 
                             if (idT != null) {
                                 dbFirestore.collection("talhoes").document(idT).get().addOnSuccessListener(snapT -> {
