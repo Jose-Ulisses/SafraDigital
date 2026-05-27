@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.safradigital.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -33,6 +34,7 @@ public class AllColheitasFragment extends Fragment {
     @SuppressLint("SetTextI18n")
     private void listarColheitas() {
         dbFirestore.collection("colheitas")
+                .whereEqualTo("userId", FirebaseAuth.getInstance().getUid())
                 .addSnapshotListener((value, error) -> {
                     if (!isAdded()) return;
 
@@ -56,7 +58,6 @@ public class AllColheitasFragment extends Fragment {
                             titleView.setVisibility(View.GONE);
                             TextView descView = itemView.findViewById(R.id.text_item_description);
 
-
                             // Inicia com valores padrão enquanto busca os nomes
                             titleView.setText("Carregando...");
                             descView.setText(String.format(java.util.Locale.getDefault(),
@@ -66,7 +67,7 @@ public class AllColheitasFragment extends Fragment {
 
                             final String[] nomeT = {"..."};
                             final String[] nomeF = {"..."};
-                            final String[] nomeL = {"..."};
+                            final String[] nomeL = {"Lavoura A"};
 
                             // Busca nomes relacionados
                             if (idL != null) {

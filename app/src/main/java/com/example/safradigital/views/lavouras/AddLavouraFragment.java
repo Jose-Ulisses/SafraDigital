@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.safradigital.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +41,7 @@ public class AddLavouraFragment extends Fragment {
                 Map<String, Object> lavoura = new HashMap<>();
                 lavoura.put("nomeLavoura", nomeLavoura);
                 lavoura.put("totalLavoura", 0);
+                lavoura.put("userId", FirebaseAuth.getInstance().getUid());
 
                 dbfirestore.collection("lavouras")
                         .add(lavoura)

@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.safradigital.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -96,6 +97,7 @@ public class AddColheitaFragment extends Fragment {
 
     private void buscarLavouras() {
         dbFirestore.collection("lavouras")
+                .whereEqualTo("userId", FirebaseAuth.getInstance().getUid())
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!isAdded()) return;
@@ -146,6 +148,7 @@ public class AddColheitaFragment extends Fragment {
 
     private void buscarFuncionarios() {
         dbFirestore.collection("funcionarios")
+                .whereEqualTo("userId", FirebaseAuth.getInstance().getUid())
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!isAdded()) return;
@@ -181,6 +184,7 @@ public class AddColheitaFragment extends Fragment {
         colheita.put("idFuncionario", idFuncionario);
         colheita.put("quantidade", qntd);
         colheita.put("data", data);
+        colheita.put("userId", FirebaseAuth.getInstance().getUid());
 
         dbFirestore.collection("colheitas")
                 .add(colheita)

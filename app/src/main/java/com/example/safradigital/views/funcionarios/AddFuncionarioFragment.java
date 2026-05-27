@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.safradigital.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import android.os.Bundle;
 import android.util.Log;
@@ -62,6 +63,7 @@ public class AddFuncionarioFragment extends Fragment {
         funcionario.put("cpf", cpf);
         funcionario.put("telefone", telefone);
         funcionario.put("chavePix", pix);
+        funcionario.put("userId", FirebaseAuth.getInstance().getUid());
 
         dbFirestore.collection("funcionarios")
                 .add(funcionario)

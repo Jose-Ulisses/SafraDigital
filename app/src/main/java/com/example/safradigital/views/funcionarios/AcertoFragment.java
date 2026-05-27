@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.example.safradigital.R;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -72,6 +73,7 @@ public class AcertoFragment extends Fragment {
     private void calcularAcerto() {
         dbFirestore.collection("colheitas")
                 .whereEqualTo("idFuncionario", idFuncionario)
+                .whereEqualTo("userId", FirebaseAuth.getInstance().getUid())
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     Map<String, Float> agregacao = new HashMap<>(); // key: idLavoura_idTalhao, value: totalQuantidade

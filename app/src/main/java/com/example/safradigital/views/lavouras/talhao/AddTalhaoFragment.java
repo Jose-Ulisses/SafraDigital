@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.safradigital.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class AddTalhaoFragment extends Fragment {
         //AutoComplete lavouras
         List<String> lavouras = new ArrayList<>();
         dbFirestore.collection("lavouras")
+                .whereEqualTo("userId", FirebaseAuth.getInstance().getUid())
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!isAdded()) return;
@@ -89,6 +91,7 @@ public class AddTalhaoFragment extends Fragment {
                     talhao.put("precoTalhao", precoTalhao);
                     talhao.put("idLavoura", idLavoura);
                     talhao.put("totalTalhao", 0.0);
+                    talhao.put("userId", FirebaseAuth.getInstance().getUid());
 
                     dbFirestore.collection("talhoes")
                             .add(talhao)

@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.safradigital.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -32,6 +33,7 @@ public class AllLavourasFragment extends Fragment {
 
     private void listarLavouras() {
         dbFirestore.collection("lavouras")
+                .whereEqualTo("userId", FirebaseAuth.getInstance().getUid())
                 .addSnapshotListener((value, error) -> {
                     if (!isAdded()) return;
 
