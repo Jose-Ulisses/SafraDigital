@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "982440691462",
+    "project_id": "safradigital27112004",
+    "storage_bucket": "safradigital27112004.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:982440691462:android:4757c56495442f57e4c087",
+        "android_client_info": {
+          "package_name": "com.example.safradigital"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDm9F67tzZouvUTak45xABrTSMqp4K-6UU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
