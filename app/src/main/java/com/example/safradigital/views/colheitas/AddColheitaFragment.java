@@ -175,7 +175,7 @@ public class AddColheitaFragment extends Fragment {
         if (btnSalvarColheita != null) btnSalvarColheita.setEnabled(false);
 
         dateHour = LocalDateTime.now();
-        format = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm");
+        format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String data = dateHour.format(format);
 
         Map<String, Object> colheita = new HashMap<>();
