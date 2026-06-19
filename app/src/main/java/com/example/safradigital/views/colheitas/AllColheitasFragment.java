@@ -1,8 +1,10 @@
 package com.example.safradigital.views.colheitas;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -19,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.safradigital.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
@@ -209,6 +213,7 @@ public class AllColheitasFragment extends Fragment {
                     }
 
                     View itemView = LayoutInflater.from(requireContext()).inflate(R.layout.item_list, linearLayout, false);
+                    View itemContainer = itemView.findViewById(R.id.item_container);
                     TextView titleView = itemView.findViewById(R.id.text_item_name);
                     titleView.setVisibility(View.GONE);
                     TextView descView = itemView.findViewById(R.id.text_item_description);
@@ -221,16 +226,26 @@ public class AllColheitasFragment extends Fragment {
                     descView.setVisibility(View.VISIBLE);
                     linearLayout.addView(itemView);
 
-                    final String[] nomeT = {"..."};
-                    final String[] nomeF = {"..."};
-                    final String[] nomeL = {"..."};
+                    final String[] nomeL = {doc.getString("nomeLavoura") != null ? doc.getString("nomeLavoura") : "..."};
+                    final String[] nomeT = {doc.getString("nomeTalhao") != null ? doc.getString("nomeTalhao") : "..."};
+                    final String[] nomeF = {doc.getString("nomeFuncionario") != null ? doc.getString("nomeFuncionario") : "..."};
+
+                    String colheitaId = doc.getId();
+                    Double qntdAtual = qntd != null ? qntd : 0.0;
+
+                    itemContainer.setOnClickListener(v -> {
+                        mostrarDialogoEditarQuantidade(colheitaId, qntdAtual, idL, idT);
+                    });
 
                     Runnable updateDetails = () -> descView.setText(String.format(java.util.Locale.getDefault(),
                             "Lavoura: %s\n\nTalhão: %s\n\nFunc.: %s\n\nQtd: %.2f\n\nData: %s",
                             nomeL[0], nomeT[0], nomeF[0], qntd != null ? qntd : 0.0, finalDataFormatada));
 
-                    // Busca nomes relacionados
-                    if (idL != null) {
+                    // Atualiza a visualização inicial (se já tiver os nomes no doc, será instantâneo)
+                    updateDetails.run();
+
+                    // Busca nomes relacionados apenas se não estiverem presentes (para registros antigos)
+                    if (nomeL[0].equals("...") && idL != null) {
                         dbFirestore.collection("lavouras").document(idL).get().addOnSuccessListener(snapL -> {
                             if (snapL.exists()) {
                                 nomeL[0] = snapL.getString("nomeLavoura");
@@ -239,7 +254,7 @@ public class AllColheitasFragment extends Fragment {
                         });
                     }
 
-                    if (idT != null) {
+                    if (nomeT[0].equals("...") && idT != null) {
                         dbFirestore.collection("talhoes").document(idT).get().addOnSuccessListener(snapT -> {
                             if (snapT.exists()) {
                                 nomeT[0] = snapT.getString("nomeTalhao");
@@ -248,7 +263,7 @@ public class AllColheitasFragment extends Fragment {
                         });
                     }
 
-                    if (idF != null) {
+                    if (nomeF[0].equals("...") && idF != null) {
                         dbFirestore.collection("funcionarios").document(idF).get().addOnSuccessListener(snapF -> {
                             if (snapF.exists()) {
                                 nomeF[0] = snapF.getString("nomeFuncionario");
@@ -259,6 +274,72 @@ public class AllColheitasFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void mostrarDialogoEditarQuantidade(String colheitaId, Double qntdAtual, String idLavoura, String idTalhao) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Editar Quantidade Colhida");
+
+        final EditText input = new EditText(requireContext());
+        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        input.setText(String.valueOf(qntdAtual));
+        builder.setView(input);
+
+        builder.setPositiveButton("Salvar", (dialog, which) -> {
+            String novaQntdStr = input.getText().toString();
+            if (!novaQntdStr.isEmpty()) {
+                try {
+                    float novaQntd = Float.parseFloat(novaQntdStr);
+                    float diferenca = novaQntd - qntdAtual.floatValue();
+
+                    // 1. Atualiza a colheita
+                    dbFirestore.collection("colheitas").document(colheitaId)
+                            .update("quantidade", novaQntd);
+
+                    // 2. Atualiza os totais (Lavoura e Talhão) usando a diferença
+                    if (idLavoura != null) {
+                        dbFirestore.collection("lavouras").document(idLavoura)
+                                .update("totalLavoura", FieldValue.increment(diferenca));
+                    }
+                    if (idTalhao != null) {
+                        dbFirestore.collection("talhoes").document(idTalhao)
+                                .update("totalTalhao", FieldValue.increment(diferenca));
+                    }
+
+                    if (isAdded()) Toast.makeText(getContext(), "Quantidade atualizada!", Toast.LENGTH_SHORT).show();
+                } catch (NumberFormatException e) {
+                    if (isAdded()) Toast.makeText(getContext(), "Valor inválido", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
+
+        builder.setNeutralButton("Excluir", (dialog, which) -> {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Excluir Colheita")
+                    .setMessage("Tem certeza que deseja excluir este registro? Isso também descontará dos totais.")
+                    .setPositiveButton("Sim, Excluir", (d, w) -> {
+                        // 1. Deleta a colheita
+                        dbFirestore.collection("colheitas").document(colheitaId).delete();
+
+                        // 2. Desconta dos totais
+                        float valorADescontar = -qntdAtual.floatValue();
+                        if (idLavoura != null) {
+                            dbFirestore.collection("lavouras").document(idLavoura)
+                                    .update("totalLavoura", FieldValue.increment(valorADescontar));
+                        }
+                        if (idTalhao != null) {
+                            dbFirestore.collection("talhoes").document(idTalhao)
+                                    .update("totalTalhao", FieldValue.increment(valorADescontar));
+                        }
+
+                        if (isAdded()) Toast.makeText(getContext(), "Colheita excluída", Toast.LENGTH_SHORT).show();
+                    })
+                    .setNegativeButton("Não", null)
+                    .show();
+        });
+
+        builder.show();
     }
 
     @Override

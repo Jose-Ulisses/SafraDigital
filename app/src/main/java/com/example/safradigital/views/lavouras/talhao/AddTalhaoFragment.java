@@ -93,18 +93,12 @@ public class AddTalhaoFragment extends Fragment {
                     talhao.put("totalTalhao", 0.0);
                     talhao.put("userId", FirebaseAuth.getInstance().getUid());
 
-                    dbFirestore.collection("talhoes")
-                            .add(talhao)
-                            .addOnSuccessListener(documentReference -> {
-                                if (!isAdded()) return;
-                                Toast.makeText(getContext(), R.string.talhao_salvo_sucesso, Toast.LENGTH_SHORT).show();
-                                getParentFragmentManager().popBackStack();
-                            })
-                            .addOnFailureListener(e -> {
-                                if (!isAdded()) return;
-                                btnSalvarTalhao.setEnabled(true);
-                                Toast.makeText(getContext(), R.string.erro_salvar_talhao, Toast.LENGTH_SHORT).show();
-                            });
+                    // Salva no Firestore
+                    dbFirestore.collection("talhoes").add(talhao);
+
+                    // Feedback e fechamento imediato
+                    Toast.makeText(getContext(), R.string.talhao_salvo_sucesso, Toast.LENGTH_SHORT).show();
+                    getParentFragmentManager().popBackStack();
                 } else if (idLavoura == null) {
                     autoCompleteLavoura.setError(getString(R.string.selecione_lavoura));
                 } else{

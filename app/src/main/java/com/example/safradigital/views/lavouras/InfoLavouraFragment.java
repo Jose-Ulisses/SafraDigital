@@ -1,13 +1,17 @@
 package com.example.safradigital.views.lavouras;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -74,17 +78,28 @@ public class InfoLavouraFragment extends Fragment {
                     if (value != null) {
                         linearLayout.removeAllViews();
                         for (QueryDocumentSnapshot doc : value) {
-                            String talhao = doc.getString("nomeTalhao");
+                            String talhaoId = doc.getId();
+                            String talhaoNome = doc.getString("nomeTalhao");
                             Double totalTalhao = doc.getDouble("totalTalhao");
+                            Long precoTalhao = doc.getLong("precoTalhao");
                             if (totalTalhao == null) totalTalhao = 0.0;
+                            if (precoTalhao == null) precoTalhao = 0L;
 
                             View itemView = LayoutInflater.from(requireContext()).inflate(R.layout.item_list, linearLayout, false);
                             TextView titleView = itemView.findViewById(R.id.text_item_name);
                             TextView descView = itemView.findViewById(R.id.text_item_description);
 
-                            titleView.setText(talhao);
-                            descView.setText("Total Colhido: " + totalTalhao + " sacas");
+                            titleView.setText(talhaoNome);
+                            descView.setText("Total Colhido: " + totalTalhao + " sacas\n\nPreço por Saca: R$ " + precoTalhao);
                             descView.setVisibility(View.VISIBLE);
+
+                            final Long precoFinal = precoTalhao;
+                            // Clique no container interno para garantir que o clique seja registrado
+                            View itemContainer = itemView.findViewById(R.id.item_container);
+                            itemContainer.setOnClickListener(v -> {
+                                Log.d("InfoLavoura", "Clicou no talhão: " + talhaoNome);
+                                mostrarDialogoEditarPreco(talhaoId, talhaoNome, precoFinal);
+                            });
 
                             linearLayout.addView(itemView);
                         }
@@ -94,20 +109,65 @@ public class InfoLavouraFragment extends Fragment {
                                 .addOnSuccessListener(documentSnapshot -> {
                                     if (!isAdded()) return;
 
-                                    Double total = documentSnapshot.getDouble("totalLavoura");
-                                    if (total == null) total = 0.0;
+                                    Double totalL = documentSnapshot.getDouble("totalLavoura");
+                                    if (totalL == null) totalL = 0.0;
 
                                     View itemView = LayoutInflater.from(requireContext()).inflate(R.layout.item_list, linearLayout, false);
                                     TextView titleView = itemView.findViewById(R.id.text_item_name);
                                     TextView descView = itemView.findViewById(R.id.text_item_description);
 
                                     titleView.setText("Total da Lavoura");
-                                    descView.setText(total + " Sacas");
+                                    descView.setText(totalL + " Sacas");
                                     descView.setVisibility(View.VISIBLE);
 
                                     linearLayout.addView(itemView);
                                 });
                     }
                 });
+    }
+
+    private void mostrarDialogoEditarPreco(String talhaoId, String nome, Long precoAtual) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Editar Preço - " + nome);
+
+        final EditText input = new EditText(requireContext());
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setText(String.valueOf(precoAtual));
+        builder.setView(input);
+
+        builder.setPositiveButton("Salvar", (dialog, which) -> {
+            String novoPrecoStr = input.getText().toString();
+            if (!novoPrecoStr.isEmpty()) {
+                try {
+                    long novoPreco = Long.parseLong(novoPrecoStr);
+                    // Atualiza no Firestore (persistência offline cuida do resto)
+                    dbFirestore.collection("talhoes").document(talhaoId)
+                            .update("precoTalhao", novoPreco);
+                    
+                    if (isAdded()) {
+                        Toast.makeText(getContext(), "Preço atualizado!", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (NumberFormatException e) {
+                    if (isAdded()) {
+                        Toast.makeText(getContext(), "Valor inválido", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
+
+        builder.setNeutralButton("Excluir", (dialog, which) -> {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Excluir Talhão")
+                    .setMessage("Deseja realmente excluir o talhão " + nome + "?")
+                    .setPositiveButton("Excluir", (d, w) -> {
+                        dbFirestore.collection("talhoes").document(talhaoId).delete();
+                        if (isAdded()) Toast.makeText(getContext(), "Talhão excluído", Toast.LENGTH_SHORT).show();
+                    })
+                    .setNegativeButton("Voltar", null)
+                    .show();
+        });
+
+        builder.show();
     }
 }

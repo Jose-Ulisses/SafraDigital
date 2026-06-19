@@ -7,7 +7,6 @@ import com.example.safradigital.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,18 +64,11 @@ public class AddFuncionarioFragment extends Fragment {
         funcionario.put("chavePix", pix);
         funcionario.put("userId", FirebaseAuth.getInstance().getUid());
 
-        dbFirestore.collection("funcionarios")
-                .add(funcionario)
-                .addOnSuccessListener(documentReference -> {
-                    if (!isAdded()) return;
-                    Toast.makeText(getContext(), R.string.funcionario_salvo_sucesso, Toast.LENGTH_SHORT).show();
-                    getParentFragmentManager().popBackStack();
-                })
-                .addOnFailureListener(e -> {
-                    if (!isAdded()) return;
-                    btnSalvarFuncionario.setEnabled(true);
-                    Log.e("Firestore", "Erro ao salvar funcionário", e);
-                    Toast.makeText(getContext(), R.string.erro_salvar_funcionario, Toast.LENGTH_SHORT).show();
-                });
+        // Salva no Firestore (funciona offline por padrão)
+        dbFirestore.collection("funcionarios").add(funcionario);
+
+        // Feedback imediato e fecha a tela
+        Toast.makeText(getContext(), R.string.funcionario_salvo_sucesso, Toast.LENGTH_SHORT).show();
+        getParentFragmentManager().popBackStack();
     }
 }

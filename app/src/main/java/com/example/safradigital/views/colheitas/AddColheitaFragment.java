@@ -178,33 +178,34 @@ public class AddColheitaFragment extends Fragment {
         format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String data = dateHour.format(format);
 
+        // Pega os nomes selecionados nos campos
+        String nomeLavoura = autoCompleteLavoura.getText().toString();
+        String nomeTalhao = autoCompleteTalhao.getText().toString();
+        String nomeFuncionario = autoCompleteFuncionario.getText().toString();
+
         Map<String, Object> colheita = new HashMap<>();
         colheita.put("idLavoura", idLavoura);
+        colheita.put("nomeLavoura", nomeLavoura); // Salva o nome para acesso rápido
         colheita.put("idTalhao", idTalhao);
+        colheita.put("nomeTalhao", nomeTalhao);   // Salva o nome para acesso rápido
         colheita.put("idFuncionario", idFuncionario);
+        colheita.put("nomeFuncionario", nomeFuncionario); // Salva o nome para acesso rápido
         colheita.put("quantidade", qntd);
         colheita.put("data", data);
         colheita.put("userId", FirebaseAuth.getInstance().getUid());
 
-        dbFirestore.collection("colheitas")
-                .add(colheita)
-                .addOnSuccessListener(documentReference -> {
-                    if (!isAdded()) return;
+        // Firestore salva localmente de forma imediata
+        dbFirestore.collection("colheitas").add(colheita);
 
-                    dbFirestore.collection("lavouras").document(idLavoura)
-                            .update("totalLavoura", FieldValue.increment(qntd));
+        // Atualiza os totais também de forma assíncrona/offline
+        dbFirestore.collection("lavouras").document(idLavoura)
+                .update("totalLavoura", FieldValue.increment(qntd));
 
-                    dbFirestore.collection("talhoes").document(idTalhao)
-                            .update("totalTalhao", FieldValue.increment(qntd));
+        dbFirestore.collection("talhoes").document(idTalhao)
+                .update("totalTalhao", FieldValue.increment(qntd));
 
-                    Toast.makeText(getContext(), R.string.colheita_salva_sucesso, Toast.LENGTH_SHORT).show();
-                    getParentFragmentManager().popBackStack();
-                })
-                .addOnFailureListener(e -> {
-                    if (!isAdded()) return;
-                    if (btnSalvarColheita != null) btnSalvarColheita.setEnabled(true);
-                    Log.e("Firestore", "Erro ao salvar colheita", e);
-                    Toast.makeText(getContext(), R.string.erro_salvar_colheita, Toast.LENGTH_SHORT).show();
-                });
+        // Damos o feedback imediato ao usuário e fechamos a tela
+        Toast.makeText(getContext(), R.string.colheita_salva_sucesso, Toast.LENGTH_SHORT).show();
+        getParentFragmentManager().popBackStack();
     }
 }

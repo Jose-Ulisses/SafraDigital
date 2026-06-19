@@ -1,9 +1,7 @@
 package com.example.safradigital.views.lavouras;
 
-import static android.content.ContentValues.TAG;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,14 +41,12 @@ public class AddLavouraFragment extends Fragment {
                 lavoura.put("totalLavoura", 0);
                 lavoura.put("userId", FirebaseAuth.getInstance().getUid());
 
-                dbfirestore.collection("lavouras")
-                        .add(lavoura)
-                        .addOnSuccessListener(documentReference -> {
-                            Toast.makeText(getContext(), "Lavoura salva com sucesso!", Toast.LENGTH_SHORT).show();
-                            getParentFragmentManager().popBackStack();
-                        })
-                        .addOnFailureListener(e ->
-                                Log.w(TAG, "Erro adicionando lavouradocument", e));
+                // Salva no Firestore (persistência offline é padrão no Android)
+                dbfirestore.collection("lavouras").add(lavoura);
+
+                // Retorno imediato para a UI
+                Toast.makeText(getContext(), "Lavoura salva com sucesso!", Toast.LENGTH_SHORT).show();
+                getParentFragmentManager().popBackStack();
             } else {
                 inputNomeLavoura.setError("Por favor, insira o nome da lavoura");
             }
